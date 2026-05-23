@@ -1,0 +1,1 @@
+// Tietomalli — täydennetään implementaation yhteydessä
