@@ -130,8 +130,7 @@ npm install
 
 # 2. Set up environment variables
 #    Copy the template and fill in your Supabase project URL and anon key
-#    (Settings → API in the Supabase dashboard)
-cp .env.local .env.local   # edit NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY
+cp .env.local.example .env.local
 
 # 3. Start local Supabase (requires Docker)
 npx supabase start
