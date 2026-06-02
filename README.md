@@ -31,7 +31,7 @@ graph TD
     DB -->|row-level events| RT
     RT -->|live messages| ML
 
-    MI -->|@agora mention| AGO
+    MI -->|"@agora mention"| AGO
     AGO -->|fetch context| DB
     AGO -->|insert AI message| DB
     DB -->|row-level event| RT
