@@ -27,7 +27,7 @@ export default function MessageInput({ onSend, disabled }: Props) {
   }
 
   return (
-    <footer className="border-t border-border px-6 py-4 flex gap-4">
+    <footer className="border-border flex gap-4 border-t px-6 py-4">
       <Textarea
         value={value}
         onChange={(e) => setValue(e.target.value)}

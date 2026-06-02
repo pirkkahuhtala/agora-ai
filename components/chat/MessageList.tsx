@@ -8,12 +8,14 @@ interface Props {
   messages: Message[];
   loading: boolean;
   currentNickname: string | null;
+  isAiTyping?: boolean;
 }
 
 export default function MessageList({
   messages,
   loading,
   currentNickname,
+  isAiTyping = false,
 }: Props) {
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -34,12 +36,17 @@ export default function MessageList({
       <div className="flex flex-col gap-3">
         {messages.map((msg) => {
           const isOwn = msg.author === currentNickname;
+
           return (
             <div
               key={msg.id}
               className={cn("flex flex-col gap-0.5", isOwn && "items-end")}
             >
-              <span className="text-xs text-muted-foreground">
+              <span
+                className={cn("text-muted-foreground text-xs", {
+                  "text-orange-400": msg.is_ai,
+                })}
+              >
                 {msg.author}
               </span>
               <div
@@ -49,7 +56,7 @@ export default function MessageList({
                     ? "bg-muted text-muted-foreground italic"
                     : isOwn
                       ? "bg-primary text-primary-foreground"
-                      : "bg-secondary text-secondary-foreground",
+                      : "bg-secondary text-secondary-foreground"
                 )}
               >
                 {msg.content}
@@ -58,6 +65,14 @@ export default function MessageList({
           );
         })}
       </div>
+      {isAiTyping && (
+        <div className="mt-3 flex flex-col gap-0.5">
+          <span className="text-muted-foreground text-xs">Agora</span>
+          <div className="bg-muted text-muted-foreground max-w-prose rounded-lg px-3 py-2 text-sm italic">
+            Thinking…
+          </div>
+        </div>
+      )}
       <div ref={bottomRef} />
     </main>
   );
