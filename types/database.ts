@@ -59,7 +59,12 @@ export type Database = {
           is_ai?: boolean;
         };
         Relationships: [
-          { foreignKeyName: "messages_room_id_fkey"; columns: ["room_id"]; referencedRelation: "rooms"; referencedColumns: ["id"]; }
+          {
+            foreignKeyName: "messages_room_id_fkey";
+            columns: ["room_id"];
+            referencedRelation: "rooms";
+            referencedColumns: ["id"];
+          },
         ];
       };
       participants: {
@@ -82,7 +87,12 @@ export type Database = {
           joined_at?: string;
         };
         Relationships: [
-          { foreignKeyName: "participants_room_id_fkey"; columns: ["room_id"]; referencedRelation: "rooms"; referencedColumns: ["id"]; }
+          {
+            foreignKeyName: "participants_room_id_fkey";
+            columns: ["room_id"];
+            referencedRelation: "rooms";
+            referencedColumns: ["id"];
+          },
         ];
       };
     };

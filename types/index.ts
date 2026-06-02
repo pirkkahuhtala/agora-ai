@@ -6,4 +6,5 @@ export type Participant = Database["public"]["Tables"]["participants"]["Row"];
 
 export type RoomInsert = Database["public"]["Tables"]["rooms"]["Insert"];
 export type MessageInsert = Database["public"]["Tables"]["messages"]["Insert"];
-export type ParticipantInsert = Database["public"]["Tables"]["participants"]["Insert"];
+export type ParticipantInsert =
+  Database["public"]["Tables"]["participants"]["Insert"];

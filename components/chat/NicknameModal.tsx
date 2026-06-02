@@ -19,10 +19,10 @@ export default function NicknameModal({ onConfirm }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
-      <div className="w-full max-w-sm rounded-lg border border-border bg-card p-6 shadow-lg">
+    <div className="bg-background/80 fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
+      <div className="border-border bg-card w-full max-w-sm rounded-lg border p-6 shadow-lg">
         <h2 className="mb-1 text-lg font-semibold">Choose a nickname</h2>
-        <p className="mb-4 text-sm text-muted-foreground">
+        <p className="text-muted-foreground mb-4 text-sm">
           This is how others will see you in the room.
         </p>
         <form onSubmit={handleSubmit} className="flex gap-2">

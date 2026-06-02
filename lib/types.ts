@@ -9,7 +9,7 @@ export const NicknameSchema = z.object({
 });
 
 export const MessageSchema = z.object({
-  room_id: z.string().uuid(),
+  room_id: z.uuid(),
   author: z.string().min(1).max(50),
   content: z.string().min(1).max(5000),
 });
