@@ -1,10 +1,8 @@
 # Agora
 
-This app takes that spirit online: a real-time group chat room built around a chosen topic, where AI acts as a secretary — keeping a live summary of what's been discussed and welcoming new participants so they can join the conversation without missing context.
+Agora is a real-time group chat where users discuss a topic together, with AI acting as a secretary that keeps a live summary and welcomes new participants so they can join without missing context. Users bring AI into the conversation by starting a message with @agora.
 
 In ancient Greece, the _agora_ was the central public space where citizens gathered to debate, deliberate, and exchange ideas. It was the beating heart of democratic discourse.
-
-Agora is a real-time group chat where users can discuss a topic together and bring AI into the conversation by starting a message with `@agora`.
 
 ## Architecture
 
