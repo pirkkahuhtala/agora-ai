@@ -31,6 +31,7 @@ export type Database = {
           created_at?: string;
           summary?: string | null;
         };
+        Relationships: [];
       };
       messages: {
         Row: {
@@ -57,6 +58,9 @@ export type Database = {
           created_at?: string;
           is_ai?: boolean;
         };
+        Relationships: [
+          { foreignKeyName: "messages_room_id_fkey"; columns: ["room_id"]; referencedRelation: "rooms"; referencedColumns: ["id"]; }
+        ];
       };
       participants: {
         Row: {
@@ -77,6 +81,9 @@ export type Database = {
           name?: string;
           joined_at?: string;
         };
+        Relationships: [
+          { foreignKeyName: "participants_room_id_fkey"; columns: ["room_id"]; referencedRelation: "rooms"; referencedColumns: ["id"]; }
+        ];
       };
     };
     Views: Record<string, never>;
