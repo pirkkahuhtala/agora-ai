@@ -13,38 +13,28 @@ Agora is a real-time group chat where users can discuss a topic together and bri
 ```mermaid
 graph TD
     subgraph Client["Browser (Next.js)"]
-        LP[Landing page\nCreate / join room]
         CR[Chat room]
         CR --> ML[Message list]
         CR --> MI[Message input]
-        CR --> SP[Summary panel]
-        CR --> PL[Participant list]
     end
 
     subgraph Supabase
-        Auth[Auth\nanonymous / email]
-        DB[(PostgreSQL\nrooms · messages · summaries)]
-        RT[Realtime\npresence + broadcast]
+        DB[(PostgreSQL\nrooms · messages · participants)]
+        RT[Realtime]
     end
 
-    subgraph AI["AI backend (server actions)"]
-        SUM[Summariser\ngpt-4o-mini]
-        WEL[Welcome composer\ngpt-4o-mini]
+    subgraph AI["AI backend (API route)"]
+        AGO[AI handler\ngpt-4o-mini]
     end
 
-    LP -->|create / join| Auth
-    Auth --> CR
     MI -->|insert message| DB
     DB -->|row-level events| RT
     RT -->|live messages| ML
-    RT -->|presence| PL
 
-    DB -->|new messages trigger| SUM
-    SUM -->|upsert summary| DB
-    DB --> SP
-
-    RT -->|new participant event| WEL
-    WEL -->|post welcome message| DB
+    MI -->|@agora mention| AGO
+    AGO -->|fetch context| DB
+    AGO -->|insert AI message| DB
+    DB -->|row-level event| RT
 ```
 
 ### Data model
@@ -54,38 +44,28 @@ erDiagram
     ROOM {
         uuid id PK
         text topic
-        text slug
+        text summary
         timestamptz created_at
     }
 
     PARTICIPANT {
         uuid id PK
         uuid room_id FK
-        text display_name
+        text name
         timestamptz joined_at
     }
 
     MESSAGE {
         uuid id PK
         uuid room_id FK
-        uuid participant_id FK
+        text author
         text content
-        text role "user | assistant"
+        boolean is_ai
         timestamptz created_at
-    }
-
-    SUMMARY {
-        uuid id PK
-        uuid room_id FK
-        text content
-        int message_count
-        timestamptz updated_at
     }
 
     ROOM ||--o{ PARTICIPANT : "has"
     ROOM ||--o{ MESSAGE : "contains"
-    ROOM ||--|| SUMMARY : "has"
-    PARTICIPANT ||--o{ MESSAGE : "sends"
 ```
 
 ### Message & summary flow
@@ -96,26 +76,20 @@ sequenceDiagram
     participant Chat as Chat room
     participant DB as Supabase DB
     participant RT as Supabase Realtime
-    participant AI as AI (server action)
+    participant AI as AI (POST /api/ai)
 
     User->>Chat: Type & send message
     Chat->>DB: INSERT message
     DB-->>RT: Broadcast new message
     RT-->>Chat: All clients receive message
 
-    Note over DB,AI: After every N messages
-    DB->>AI: Trigger summarisation
-    AI->>DB: UPSERT summary
-    DB-->>RT: Broadcast summary update
-    RT-->>Chat: Summary panel refreshes
-
-    actor NewUser
-    NewUser->>Chat: Join room
-    Chat->>RT: Presence join event
-    RT->>AI: Compose welcome (summary + topic)
-    AI->>DB: INSERT welcome message
-    DB-->>RT: Broadcast welcome
-    RT-->>Chat: All clients see welcome
+    Note over Chat,AI: When message starts with @agora
+    Chat->>AI: POST /api/ai
+    AI->>DB: SELECT all messages (context)
+    AI-->>AI: generateText (gpt-4o-mini)
+    AI->>DB: INSERT message (is_ai=true)
+    DB-->>RT: Broadcast AI message
+    RT-->>Chat: All clients see AI reply
 ```
 
 ## Prerequisites
@@ -130,9 +104,12 @@ sequenceDiagram
 # 1. Install dependencies
 npm install
 
-# 2. Set up environment variables
-#    Copy the template and fill in your Supabase project URL and anon key
-cp .env.local.example .env.local
+# 2. Create .env.local and fill in your credentials
+cat > .env.local << 'EOF'
+NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<your-local-anon-key>
+OPENAI_API_KEY=sk-...
+EOF
 
 # 3. Start local Supabase (requires Docker)
 npx supabase start
