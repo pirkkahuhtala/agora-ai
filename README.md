@@ -1,6 +1,6 @@
 # Agora
 
-Agora is a real-time group chat where users discuss a topic together, with AI acting as a secretary that keeps a live summary and welcomes new participants so they can join without missing context. Users bring AI into the conversation by starting a message with @agora.
+Agora is a real-time group chat where users discuss a topic together. Users can ask the AI secretary into the conversation by starting a message with `@agora` — it responds with context awareness of the full conversation.
 
 In ancient Greece, the _agora_ was the central public space where citizens gathered to debate, deliberate, and exchange ideas. It was the beating heart of democratic discourse.
 
@@ -11,9 +11,12 @@ In ancient Greece, the _agora_ was the central public space where citizens gathe
 ```mermaid
 graph TD
     subgraph Client["Browser (Next.js)"]
+        NM[NicknameModal]
         CR[Chat room]
-        CR --> ML[Message list]
-        CR --> MI[Message input]
+        CR --> RD[RoomDetails\ntopic + summary]
+        CR --> ML[MessageList]
+        CR --> MI[MessageInput]
+        CR --> PL[ParticipantList\nsidebar]
     end
 
     subgraph Supabase
@@ -25,13 +28,16 @@ graph TD
         AGO[AI handler\ngpt-4o-mini]
     end
 
-    MI -->|insert message| DB
+    NM -->|nickname → localStorage| CR
+    NM -->|INSERT participant| DB
+    MI -->|INSERT message| DB
     DB -->|row-level events| RT
     RT -->|live messages| ML
+    RT -->|participant INSERT/DELETE| PL
 
     MI -->|"@agora mention"| AGO
-    AGO -->|fetch context| DB
-    AGO -->|insert AI message| DB
+    AGO -->|SELECT messages context| DB
+    AGO -->|INSERT message is_ai=true| DB
     DB -->|row-level event| RT
 ```
 
@@ -66,7 +72,7 @@ erDiagram
     ROOM ||--o{ MESSAGE : "contains"
 ```
 
-### Message & summary flow
+### Message flow
 
 ```mermaid
 sequenceDiagram
@@ -82,12 +88,36 @@ sequenceDiagram
     RT-->>Chat: All clients receive message
 
     Note over Chat,AI: When message starts with @agora
-    Chat->>AI: POST /api/ai
+    Chat->>AI: POST /api/ai {roomId, userMessage}
     AI->>DB: SELECT all messages (context)
     AI-->>AI: generateText (gpt-4o-mini)
     AI->>DB: INSERT message (is_ai=true)
     DB-->>RT: Broadcast AI message
     RT-->>Chat: All clients see AI reply
+```
+
+### Participant lifecycle
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Modal as NicknameModal
+    participant LS as localStorage
+    participant DB as Supabase DB
+    participant RT as Supabase Realtime
+    participant Others as Other clients
+
+    User->>Modal: Enter nickname
+    Modal->>LS: persist agora:nickname
+    Modal->>DB: DELETE stale rows (room_id + name)
+    Modal->>DB: INSERT participant
+    DB-->>RT: Broadcast INSERT
+    RT-->>Others: Participant list updated
+
+    Note over User,DB: On page unload / unmount
+    User->>DB: DELETE participant (by id)
+    DB-->>RT: Broadcast DELETE
+    RT-->>Others: Participant list updated
 ```
 
 ## Prerequisites
