@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const RoomSchema = z.object({
+  summary: z.string().max(500).optional(),
   topic: z.string().min(3).max(200),
 });
 
@@ -14,6 +15,6 @@ export const MessageSchema = z.object({
   content: z.string().min(1).max(5000),
 });
 
-export type RoomInput = z.infer<typeof RoomSchema>;
+export type Room = z.infer<typeof RoomSchema>;
 export type NicknameInput = z.infer<typeof NicknameSchema>;
 export type MessageInput = z.infer<typeof MessageSchema>;
