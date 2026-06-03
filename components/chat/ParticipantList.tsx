@@ -6,14 +6,17 @@ interface Props {
   currentNickname: string | null;
 }
 
-export default function ParticipantList({ participants, currentNickname }: Props) {
+export default function ParticipantList({
+  participants,
+  currentNickname,
+}: Props) {
   return (
     <aside className="border-border flex w-44 shrink-0 flex-col gap-3 border-l px-4 py-4">
-      <span className="text-muted-foreground text-xs font-medium uppercase tracking-wide">
-        Online {participants.length}
+      <span className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+        Online {participants.length + 1}
       </span>
       <ul className="flex flex-col gap-1">
-        {[{id: "xyz", name: "Agora"}, ...participants].map((p) => (
+        {[{ id: "xyz", name: "Agora" }, ...participants].map((p) => (
           <li
             key={p.id}
             className={cn(
