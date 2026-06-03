@@ -134,9 +134,11 @@ npm run start    # production server
 ### Supabase
 
 ```bash
-npx supabase start                                          # start local Supabase (Docker)
-npx supabase stop                                          # stop local Supabase
-npx supabase db reset                                      # reset local DB and re-run migrations
-npx supabase db push                                       # push migrations to cloud project
-npx supabase gen types typescript --local > types/database.ts  # regenerate TypeScript types
+npx supabase start                                              # start local Supabase (Docker)
+npx supabase stop                                               # stop local Supabase
+npx supabase db reset                                           # reset local DB and re-run migrations
+npx supabase login                                              # login to Supabase CLI with access token
+npx supabase link                                               # link local project to cloud project
+npx supabase db push                                            # push migrations to cloud project
+npx supabase gen types typescript --local > types/database.ts   # regenerate TypeScript types
 ```
