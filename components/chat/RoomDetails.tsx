@@ -12,10 +12,15 @@ export function RoomDetails({
 }) {
   return (
     <div className={cn("border-b px-6 py-4", className)}>
-      <h1 className="font-bold">
-        {loading ? "Loading room..." : room ? room.topic : "Room not found"}
-      </h1>
-      {room?.summary && <p className="text-sm text-gray-500">{room.summary}</p>}
+      {loading && <h1 className="text-sm font-bold">Loading room...</h1>}
+      {!loading && room && (
+        <>
+          <h1 className="text-sm font-bold mb-1">{room.topic}</h1>
+          {room?.summary && (
+            <p className="text-xs text-gray-500">{room.summary}</p>
+          )}
+        </>
+      )}
     </div>
   );
 }
