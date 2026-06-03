@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const RoomSchema = z.object({
-  summary: z.string().max(500).optional(),
+  summary: z.string().max(500).nullable(),
   topic: z.string().min(3).max(200),
 });
 
