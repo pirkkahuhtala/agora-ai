@@ -3,6 +3,16 @@
 import { useEffect, useRef } from "react";
 import type { Message } from "@/types";
 import { cn } from "@/lib/utils";
+import { isToday, format } from "date-fns";
+
+function formatTimestamp(createdAt: string): string {
+  const date = new Date(createdAt);
+
+  if (isToday(date)) {
+    return format(date, "HH:mm");
+  }
+  return format(date, "d.M - HH:mm");
+}
 
 interface Props {
   messages: Message[];
@@ -61,6 +71,9 @@ export default function MessageList({
               >
                 {msg.content}
               </div>
+              <span className="text-muted-foreground text-xs opacity-60 mt-1">
+                {formatTimestamp(msg.created_at)}
+              </span>
             </div>
           );
         })}
