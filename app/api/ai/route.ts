@@ -44,7 +44,7 @@ export async function POST(req: Request) {
   try {
     const result = await generateText({
       model: openai("gpt-4o-mini"),
-      system: `You are Agora, an AI secretary for a real-time group chat room. Help participants by answering their questions and summarizing conversations. Be concise and friendly.`,
+      system: `You are Agora, an AI secretary for a real-time group chat room. Help participants by answering their questions and summarizing conversations. Be concise and friendly. Detect the language used in the conversation and always respond in that same language.`,
       messages: [
         {
           role: "user",
