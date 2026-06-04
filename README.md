@@ -98,6 +98,8 @@ sequenceDiagram
 
 ### Participant lifecycle
 
+> **Note:** The `participants` table is defined in the schema but not yet in use — participant tracking is planned but currently unimplemented.
+
 ```mermaid
 sequenceDiagram
     actor User
